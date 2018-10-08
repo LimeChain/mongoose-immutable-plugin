@@ -1,0 +1,23 @@
+{
+  "name": "mongoose-immutable-plugin",
+  "version": "1.0.0",
+  "description": "Immutable fields plugin for mongoose",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LimeChain/mongoose-immutable-plugin.git"
+  },
+  "keywords": [
+    "immutable fields",
+    "immutable mongo"
+  ],
+  "author": "Lyubomir Kiprov (lyubo@limechain.tech)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LimeChain/mongoose-immutable-plugin/issues"
+  },
+  "homepage": "https://github.com/LimeChain/mongoose-immutable-plugin#readme"
+}
