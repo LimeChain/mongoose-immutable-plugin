@@ -1,5 +1,5 @@
 let isObject = function (objCandidate) {
-    return typeof objCandidate === 'object' && !!objCandidate;
+    return !!objCandidate && typeof objCandidate === 'object';
 }
 
 module.exports = function immutableFieldPlugin(schema) {
@@ -57,12 +57,16 @@ module.exports = function immutableFieldPlugin(schema) {
     }
 
     let isNestedImmutable = function (schemaNestedLevel, nestedFields, nesting = 1) {
+        if (schemaNestedLevel.immutable) {
+            return true;
+        }
+
         if (schemaNestedLevel[nestedFields[nesting]]) {
             if (nestedFields.length - 1 == nesting) {
                 return schemaNestedLevel[nestedFields[nesting]].immutable;
             }
 
-            isNestedImmutable(schemaNestedLevel[nestedFields[nesting]], nestedFields, ++nesting);
+            return isNestedImmutable(schemaNestedLevel[nestedFields[nesting]], nestedFields, ++nesting);
         }
         return false;
     }

@@ -4,7 +4,7 @@
   "description": "Immutable fields plugin for mongoose",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha './tests/immutable-plugin-tests.js' --exit"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/LimeChain/mongoose-immutable-plugin/issues"
   },
-  "homepage": "https://github.com/LimeChain/mongoose-immutable-plugin#readme"
+  "homepage": "https://github.com/LimeChain/mongoose-immutable-plugin#readme",
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "mongoose": "^5.2.6"
+  }
 }
