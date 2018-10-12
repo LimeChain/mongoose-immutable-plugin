@@ -73,32 +73,35 @@ module.exports = function immutableFieldPlugin(schema) {
 
     schema.pre('save', function (next) {
         if (!this.isNew) {
-            guardImmutableFieldsReSave.call(this, this.toObject());
+            guardImmutableFieldsReSave.call(this, this);
         }
 
         next();
     });
 
     let guardImmutableFieldsReSave = function (updatedFields, schemaNestedLevel = schema.tree, fieldPath = '') {
-        let fieldsNames = Object.keys(updatedFields);
+        let fieldsNames = Object.keys(updatedFields.toObject());
         let prevFieldPath = fieldPath;
 
         for (let i = 0; i < fieldsNames.length; i++) {
             if (isObject(updatedFields[fieldsNames[i]]) && !schemaNestedLevel[fieldsNames[i]].type) {
                 fieldPath = fieldPath ? `${fieldPath}.${fieldsNames[i]}` : fieldsNames[i].toString();
 
-                guardImmutableFieldsReSave.call(
-                    this,
+                guardImmutableFieldsReSave.call(this,
                     updatedFields[fieldsNames[i]],
                     schemaNestedLevel[fieldsNames[i]],
                     fieldPath
                 );
+                this.unmarkModified(fieldPath);
                 fieldPath = prevFieldPath;
 
             } else if (schemaNestedLevel[fieldsNames[i]].immutable) {
                 fieldPath = fieldPath ? `${fieldPath}.${fieldsNames[i]}` : fieldsNames[i].toString();
+                if (Array.isArray(schemaNestedLevel[fieldsNames[i]].type)) {
+                    updatedFields[fieldsNames[i]] = [];
+                }
                 this.unmarkModified(fieldPath);
-                fieldPath = '';
+                fieldPath = prevFieldPath;
             }
         }
     }

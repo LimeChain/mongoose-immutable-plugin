@@ -1,8 +1,9 @@
 # Mongoose immutable fields plugin
 
-Mongoose immutable fields plugin was born when I have hard time tried to guard a field from modifications after document creation.
+Immutable property guards modifications on a filed **after document creation**.
 
-I could not find something, which does that for me (maybe the mongoose concept in my head is wrong), but I have need of some way to 
+Mongoose immutable fields plugin was born when I have hard time tried to guard a field from modifications after document creation.
+I could not find something, which does that for me (maybe the mongoose concept in my head is wrong), but I had need of some way to 
 protect my fields (from developers - myself included).
 
 ### Operations-Guard
@@ -14,10 +15,16 @@ The plugin guards fields modification for following operations :
 * findAndUpdate
 
 ### Usage
-You can use the plugin for three types of fields  
-**Note!** Other types are not tested
 
-1. Simple Field
+**Note!** Immutable-plugin is tested only for below types of fields. **The behavior of other types is unknown**
+
+
+| object | array | number | string |
+| ------ | :---: | :----: | -----: |
+
+---
+
+1. Simple Field Schema
 
 ```javascript
 let SimpleFieldSchema = new Schema({
@@ -28,9 +35,11 @@ let SimpleFieldSchema = new Schema({
     },
     simpleFieldB: Number
 });
+
+SimpleFieldSchema.plugin(require('mongoose-immutable-fields'));
 ```  
 
-2. Nested Field
+2. Nested Field Schema
 
 ```javascript
 let NestedFieldSchema = new Schema({
@@ -45,10 +54,11 @@ let NestedFieldSchema = new Schema({
   	}
   }
 });
+
+NestedFieldSchema.plugin(require('mongoose-immutable-fields'));
 ```
 
-
-3. Array Field
+3. Array Field Schema(Limitations)
 
 ```javascript
 let ArrayFieldSchema = new Schema({
@@ -60,17 +70,60 @@ let ArrayFieldSchema = new Schema({
     ]
   }
 });
+
+ArrayFieldSchema.plugin(require('mongoose-immutable-fields'));
 ```
+
+4. Mixed Schema 
+```javascript
+let MixedImmutabilitySchema = new Schema({
+    id: Schema.Types.ObjectId,
+    parentA: {
+        arr: {
+            immutable: true,
+            type: [
+                { item: String }
+            ]
+        },
+        childA: String,
+        childB: {
+            arr1: {
+                immutable: true,
+                type: [
+                    { item: String }
+                ]
+            },
+            arr2: {
+                type: [
+                    { item: String }
+                ]
+            }
+        },
+        childC: {
+            type: String,
+            immutable: true,
+        }
+    },
+    parentB: String,
+    parentC: {
+        type: Number,
+        immutable: true,
+    }
+});
+
+MixedImmutabilitySchema.plugin(require('mongoose-immutable-fields'));
+```
+
 
 
 ### Tests
 You need to have installed and run **mongodb**  
-Run tests -> run the test file with **node**
+Run tests -> run the test file with **npm run test**
 
 ### Limitations
-   * When using update method (not relevant for re-save), immutability will be only triggered for **$set** and **$inc** options
+   * When using update methods (not relevant for re-save), immutability will be only triggered for **$set** and **$inc** options
      or if you pass a **whole object**
-   * If you use re-save as a way to update a document, you will get back an updated document (field will be updated although it is immutable) but if you retrieve it, it won't be
+   * If you use re-save as a way to update a document, you will get back the document in the state before update (field will be updated although it is immutable) but if you retrieve it, it won't be
        
        ##### Example :
        	```javascript  

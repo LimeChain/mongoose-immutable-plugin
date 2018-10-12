@@ -9,7 +9,6 @@ let ArrayImmutabilitySchema = new Schema({
             { item: String }
         ]
     }
-
 });
 
 ArrayImmutabilitySchema.plugin(require('./../../'));
