@@ -355,21 +355,7 @@ describe('Test Mixed Immutability', async function () {
 
     it('Should keep immutable fields state after updateOne', async () => {
         await checkMixedImmutability(async function (doc) {
-            await MixedImmutability.updateOne({ _id: doc._id }, UPDATE_QUERY
-                // {
-                //     $set: {
-                //         'parentA.arr': UPDATE_VALUES.parentA.arr,
-                //         'parentA.childB.arr1': UPDATE_VALUES.parentA.childB.arr1,
-                //         'parentA.childB.arr2': UPDATE_VALUES.parentA.childB.arr2,
-                //         'parentA.childA': UPDATE_VALUES.parentA.childA,
-                //         'parentA.childC': UPDATE_VALUES.parentA.childC,
-                //         'parentB': UPDATE_VALUES.parentB,
-                //     },
-                //     $inc: {
-                //         'parentC': 1
-                //     }
-                // }
-            );
+            await MixedImmutability.updateOne({ _id: doc._id }, UPDATE_QUERY);
         });
     });
 
@@ -386,6 +372,46 @@ describe('Test Mixed Immutability', async function () {
         });
     });
 
+    describe('Test multiple update options in one query', () => {
+        it('Should keep immutable fields state in multiple update options', async () => {
+            await checkMixedImmutability(async function (doc) {
+                await MixedImmutability.updateOne({ _id: doc._id },
+                    {
+                        $set: {
+                            'parentA.arr': UPDATE_VALUES.parentA.arr,
+                            'parentA.childB.arr1': UPDATE_VALUES.parentA.childB.arr1,
+                            'parentA.childB.arr2': UPDATE_VALUES.parentA.childB.arr2,
+                            'parentA.childA': UPDATE_VALUES.parentA.childA,
+                            'parentA.childC': UPDATE_VALUES.parentA.childC,
+                            'parentB': UPDATE_VALUES.parentB,
+                        },
+                        $inc: {
+                            'parentC': 1
+                        }
+                    }
+                );
+            });
+        });
+
+
+        it('Should keep immutable fields state when there is nested update options', async () => {
+            await checkMixedImmutability(async function (doc) {
+                await MixedImmutability.updateOne({ _id: doc._id },
+                    {
+                        'parentA.arr': UPDATE_VALUES.parentA.arr,
+                        'parentA.childB.arr1': UPDATE_VALUES.parentA.childB.arr1,
+                        'parentA.childB.arr2': UPDATE_VALUES.parentA.childB.arr2,
+                        'parentA.childA': UPDATE_VALUES.parentA.childA,
+                        'parentA.childC': UPDATE_VALUES.parentA.childC,
+                        'parentB': UPDATE_VALUES.parentB,
+                        $inc: {
+                            'parentC': 1
+                        }
+                    }
+                );
+            });
+        });
+    });
 
     async function checkMixedImmutability(updateMethod) {
         let mixedImmutability = await MixedImmutability.create(MixedImmutabilityMock);
@@ -408,5 +434,7 @@ describe('Test Mixed Immutability', async function () {
         assert(updatedDoc.parentC == MixedImmutabilityMock.parentC, "Immutable field was updated");
     }
 
+
     after(() => mongoose.connection.collections['arrayimmutabilities'].remove({}));
 });
+
