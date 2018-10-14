@@ -58,7 +58,12 @@ let NestedFieldSchema = new Schema({
 NestedFieldSchema.plugin(require('mongoose-immutable-fields'));
 ```
 
-3. Array Field Schema(Limitations)
+3. Array Field Schema
+
+**Note!**  Array-type field can be immutable, but the plugin will be triggered on array-level, not for array's items properties.
+That means if you have for example an array of objects and mark an object(array item) property as immutable, plugin wont handle that. 
+
+If you mark an array as immutable one, before db update, the whole array will be removed with all modifications on it
 
 ```javascript
 let ArrayFieldSchema = new Schema({
