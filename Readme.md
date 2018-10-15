@@ -2,7 +2,7 @@
 
 Immutable property guards modifications on a field **after document creation**.
 
-Mongoose immutable fields plugin was born when I have hard time trying to guard a field from modifications after document creation.
+Mongoose immutable fields plugin was born when I had hard time trying to guard a field from modifications after document creation.
 I could not find something, which does that for me (maybe the mongoose concept in my head is wrong), but I had need of some way to 
 protect my fields (from developers - myself included).
 
