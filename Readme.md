@@ -36,7 +36,7 @@ let SimpleFieldSchema = new Schema({
     simpleFieldB: Number
 });
 
-SimpleFieldSchema.plugin(require('mongoose-immutable-fields'));
+SimpleFieldSchema.plugin(require('mongoose-immutable-plugin'));
 ```  
 
 2. Nested Field Schema
@@ -55,7 +55,7 @@ let NestedFieldSchema = new Schema({
   }
 });
 
-NestedFieldSchema.plugin(require('mongoose-immutable-fields'));
+NestedFieldSchema.plugin(require('mongoose-immutable-plugin'));
 ```
 
 3. Array Field Schema
@@ -76,7 +76,7 @@ let ArrayFieldSchema = new Schema({
   }
 });
 
-ArrayFieldSchema.plugin(require('mongoose-immutable-fields'));
+ArrayFieldSchema.plugin(require('mongoose-immutable-plugin'));
 ```
 
 4. Mixed Schema 
@@ -116,7 +116,7 @@ let MixedImmutabilitySchema = new Schema({
     }
 });
 
-MixedImmutabilitySchema.plugin(require('mongoose-immutable-fields'));
+MixedImmutabilitySchema.plugin(require('mongoose-immutable-plugin'));
 ```
 
 
