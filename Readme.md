@@ -1,8 +1,8 @@
 # Mongoose immutable fields plugin
 
-Immutable property guards modifications on a filed **after document creation**.
+Immutable property guards modifications on a field **after document creation**.
 
-Mongoose immutable fields plugin was born when I have hard time tried to guard a field from modifications after document creation.
+Mongoose immutable fields plugin was born when I have hard time trying to guard a field from modifications after document creation.
 I could not find something, which does that for me (maybe the mongoose concept in my head is wrong), but I had need of some way to 
 protect my fields (from developers - myself included).
 
@@ -126,8 +126,7 @@ You need to have installed and run **mongodb**
 Run tests -> run the test file with **npm run test**
 
 ### Limitations
-   * When using update methods (not relevant for re-save), immutability will be only triggered for **$set** and **$inc** options
-     or if you pass a **whole object**
+
    * If you use re-save as a way to update a document, you will get back the document in the state before update (field will be updated although it is immutable) but if you retrieve it, it won't be
        
        ##### Example :

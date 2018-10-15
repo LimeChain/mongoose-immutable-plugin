@@ -8,7 +8,7 @@ module.exports = function immutableFieldPlugin(schema) {
     guardUpdate(schema);
 
     // On save we have mongoose document, a.k.a object with some mongoose methods
-    // We have to unmark the modifications on immutable properties
+    // We have to unmark the modifications for immutable properties
     guardSave(schema);
 }
 
@@ -51,15 +51,23 @@ let guardUpdate = function (schema) {
         let fieldsNames = Object.keys(updatedFields);
 
         for (let i = 0; i < fieldsNames.length; i++) {
+
+            // Checks if a property is mongoose option(mongoose query options starts with $)
+            // $set, $inc, $push, etc.
             if (fieldsNames[i].startsWith('$')) {
                 guardImmutableFieldsUpdate(
                     updatedFields[fieldsNames[i]],
+                    schemaNestedLevel
                 );
 
+                // Remove the mongoose option if it consists only immutable fields
                 if (Object.keys(updatedFields[fieldsNames[i]]).length == 0) {
                     delete updatedFields[fieldsNames[i]];
                 }
             } else if (fieldsNames[i].includes('.')) {
+
+                // Checks for nested objects
+                // Example: levelA.levelB.levelC
                 let nestedFields = fieldsNames[i].split('.');
                 if (isNestedImmutable(schemaNestedLevel[nestedFields[0]], nestedFields)) {
                     delete updatedFields[fieldsNames[i]];
@@ -78,10 +86,23 @@ let guardUpdate = function (schema) {
     }
 
     let isNestedImmutable = function (schemaNestedLevel, nestedFields, nesting = 1) {
+        /*
+            If a schemaNestedLevel is immutable, it removes the whole branch
+            Example: {
+                    levelA: {
+                        type: {
+                            levelB: String
+                        },
+                        immutable: true
+                    }
+                }
+            Plugin wont check levelA.levelB, it will remove levelA
+        */
         if (schemaNestedLevel.immutable) {
             return true;
         }
 
+        // Check only existing schema properties for immutable flag
         if (schemaNestedLevel[nestedFields[nesting]]) {
             if (nestedFields.length - 1 == nesting) {
                 return schemaNestedLevel[nestedFields[nesting]].immutable;
@@ -97,7 +118,7 @@ let guardUpdate = function (schema) {
 let guardSave = function (schema) {
     schema.pre('save', function (next) {
         if (!this.isNew) {
-            guardImmutableFieldsReSave.call(this, this);
+            guardImmutableFieldsReSave(this);
         }
 
         next();
@@ -109,12 +130,9 @@ let guardSave = function (schema) {
         for (let i = 0; i < fieldsNames.length; i++) {
             if (isObject(updatedFields[fieldsNames[i]]) && !schemaNestedLevel[fieldsNames[i]].type) {
 
-                discardChanges.call(
-                    this,
-                    fieldPath,
-                    fieldsNames[i],
+                discardChanges.call(updatedFields, fieldPath, fieldsNames[i],
                     function () {
-                        guardImmutableFieldsReSave.call(this,
+                        guardImmutableFieldsReSave(
                             updatedFields[fieldsNames[i]],
                             schemaNestedLevel[fieldsNames[i]],
                             fieldPath
@@ -122,10 +140,7 @@ let guardSave = function (schema) {
                     });
             } else if (schemaNestedLevel[fieldsNames[i]].immutable) {
 
-                discardChanges.call(
-                    this,
-                    fieldPath,
-                    fieldsNames[i],
+                discardChanges.call(updatedFields, fieldPath, fieldsNames[i],
                     function () {
                         if (Array.isArray(schemaNestedLevel[fieldsNames[i]].type)) {
                             updatedFields[fieldsNames[i]] = [];
@@ -138,7 +153,7 @@ let guardSave = function (schema) {
     let discardChanges = function (fieldPath, fieldName, callBackLogic) {
         fieldPath.push(fieldName);
 
-        callBackLogic.call(this);
+        callBackLogic();
 
         this.unmarkModified(fieldPath.join('.'));
         fieldPath.pop();
