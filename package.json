@@ -1,6 +1,6 @@
 {
   "name": "mongoose-immutable-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Immutable fields plugin for mongoose",
   "main": "index.js",
   "scripts": {
