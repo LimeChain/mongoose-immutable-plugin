@@ -1,10 +1,11 @@
 {
   "name": "mongoose-immutable-plugin",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Immutable fields plugin for mongoose",
   "main": "index.js",
   "scripts": {
-    "test": "mocha './tests/immutable-plugin-tests.js' --exit"
+    "test": "nyc --check-coverage --lines 85 mocha './tests/immutable-plugin-tests.js' --exit",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -t"
   },
   "repository": {
     "type": "git",
