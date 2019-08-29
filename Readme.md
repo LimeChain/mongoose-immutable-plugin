@@ -1,3 +1,6 @@
+[![npm version](https://badge.fury.io/js/mongoose-immutable-plugin.svg)](https://badge.fury.io/js/mongoose-immutable-plugin.svg) 
+[![codecov](https://codecov.io/gh/LimeChain/mongoose-immutable-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/LimeChain/mongoose-immutable-plugin)
+
 # Mongoose immutable fields plugin
 
 Immutable property guards modifications on a field **after document creation**.
