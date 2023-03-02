@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/LimeChain/mongoose-immutable-plugin#readme",
   "devDependencies": {
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "mongoose": "^5.2.6"
   }
 }
